@@ -13,7 +13,7 @@ void PMXLoader::Load()
 	if (!file)
 	{
 		std::cerr << "Failed to open " << path << std::endl;
-		std::exit(1);
+		// std::exit(1);
 	}
 
 	char signature[4];
@@ -25,7 +25,7 @@ void PMXLoader::Load()
 			if (signature[i] != pmxsign[i])
 			{
 				std::cerr << "This file is not PMX." << std::endl;
-				std::exit(1);
+				// std::exit(1);
 			}
 		}
 	}
@@ -249,11 +249,49 @@ void PMXLoader::Load()
 
 	std::cout << "Face count : " << model->faceCount << std::endl;
 
+	switch (model->header.vertexIndexSize)
+	{
+	case 1:
+	{
+		char vertexIndex;
+		for (int i = 0; i < model->faceCount; i++)
+		{
+			file.read(&vertexIndex, sizeof(char));
+			model->vertexIndex.push_back(static_cast<GLuint>(vertexIndex));
+		}
+		break;
+	}
+	case 2:
+		short vertexIndex;
+		{
+			for (int i = 0; i < model->faceCount; i++)
+			{
+				file.read(reinterpret_cast<char*>(&vertexIndex), sizeof(short));
+				model->vertexIndex.push_back(static_cast<GLuint>(vertexIndex));
+			}
+			break;
+		}
+	case 3:
+	{
+		int vertexIndex;
+		for (int i = 0; i < model->faceCount; i++)
+		{
+			file.read(reinterpret_cast<char*>(&vertexIndex), sizeof(int));
+			model->vertexIndex.push_back(static_cast<GLuint>(vertexIndex));
+		}
+		break;
+	}
+	default:
+		std::cout << "This vertex index size is invalid." << std::endl;
+		break;
+	}
 	for (int i = 0; i < model->faceCount; i++)
 	{
-		std::vector<char> vi(model->header.vertexIndexSize);
-		file.read(vi.data(), model->header.vertexIndexSize);
-		model->vertexIndex.push_back(static_cast<GLuint>(vi[0]));
+		// std::vector<char> vi(model->header.vertexIndexSize);
+		// file.read(vi.data(), model->header.vertexIndexSize);
+		// GLuint vertexIndex = static_cast<GLuint>(vi[0]);
+		// int vertexIndex = *reinterpret_cast<int*>(vi.data());
+		// model->vertexIndex.push_back(static_cast<GLuint>(vertexIndex));
 
 		// std::cout << "Vertex Index : " << static_cast<int>(vi[0]) << std::endl;
 	}

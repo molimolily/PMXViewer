@@ -55,13 +55,13 @@ int main(int argc, char *argv[])
 	const GLint modelViewLoc(shader.getUniformLoc("modelView"));
 	const GLint projectionLoc(shader.getUniformLoc("projection"));
 
-	// std::string path = "C:\\Users\\vmlab\\source\\repos\\PMXViewer\\Models\\test.pmx";
-	// std::string path = "C:\\Users\\vmlab\\source\\repos\\PMXViewer\\Models\\Sphere.pmx";
-	//std::string path = "H:\\omori\\repos\\molimolily\\PMXViewer\\Models\\miku.pmx";
-	std::string path = "..\\Models\\miku.pmx";
-	// std::string path = "C:\\Users\\vmlab\\source\\repos\\PMXViewer\\Models\\Alicia\\MMD\\Alicia_solid.pmx";
-	// std::string path = "C:\\Users\\vmlab\\source\\repos\\PMXViewer\\Models\\つみ式ミクさんv4\\つみ式ミクさんv4.pmx";
-	// std::string path = "C:\\Users\\vmlab\\source\\repos\\PMXViewer\\Models\\コロン式++初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
+	// std::string path = "..\\Models\\test.pmx";
+	// std::string path = "..\\Models\\Sphere.pmx";
+	// std::string path = "..\\Models\\miku.pmx";
+	std::string path = "..\\Models\\Alicia\\MMD\\Alicia_solid.pmx";
+	// std::string path = "..\\Models\\つみ式ミクさんv4\\つみ式ミクさんv4.pmx";
+	// std::string path = "..\\Models\\コロン式++初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
+	// std::string path = "..\\Models\\038_かに\\かに.pmx";
 	Model model(path);
 
 	// 図形データの作成
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 	// std::unique_ptr<Shape> shape(new Shape(3, 12, vertices));
 	// std::unique_ptr<Shape> shape(new ShapeIndex(3, 8, cubeVertex, 24, wireCubeIndex));
 	// std::unique_ptr<Shape> shape(new SolidShapeIndex(3, 8, cubeVertex, 36, solidCubeIndex));
-	std::unique_ptr<Shape> shape(new Shape(3, model.vertexCount, model.vertices.data()));
-	// std::unique_ptr<Shape> shape(new SolidShapeIndex(3, model.vertexCount, model.vertices.data(), model.faceCount, model.vertexIndex.data()));
+	// std::unique_ptr<Shape> shape(new Shape(3, model.vertexCount, model.vertices.data()));
+	std::unique_ptr<Shape> shape(new SolidShapeIndex(3, model.vertexCount, model.vertices.data(), model.faceCount, model.vertexIndex.data()));
 
 	Camara camera;
 	glm::vec3 initCameraPos = glm::vec3(0.0f, 10.0f, -20.0f);
