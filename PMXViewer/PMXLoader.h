@@ -5,7 +5,6 @@
 #include <array>
 #include <string>
 
-
 class Model;
 
 class PMXLoader
@@ -17,6 +16,8 @@ public:
 	PMXLoader(const std::string& path, Model* model);
 
 	void Load();
+	std::wstring decodeUTF16LE(const std::vector<char>& binaryData);
+	void writeStringToFile(const std::wstring& str, const std::string& filename);
 };
 
 

@@ -7,6 +7,33 @@ PMXLoader::PMXLoader(const std::string& path, Model* model) :
 
 }
 
+std::wstring PMXLoader::decodeUTF16LE(const std::vector<char>& binaryData) {
+	std::wstring decodedString;
+	for (size_t i = 0; i < binaryData.size(); i += 2) {
+		unsigned char lowByte = binaryData[i + 1];  // バイトの順序を逆に解釈
+		unsigned char highByte = binaryData[i];     // バイトの順序を逆に解釈
+		wchar_t utf16Char = (highByte << 8) | lowByte;
+		decodedString += utf16Char;
+	}
+	return decodedString;
+}
+
+void PMXLoader::writeStringToFile(const std::wstring& str, const std::string& filename) {
+	std::ofstream outputFile(filename, std::ios::binary);
+	if (outputFile) {
+		// BOMを付加
+		unsigned char bom[2] = { 0xFF, 0xFE };
+		outputFile.write(reinterpret_cast<const char*>(bom), sizeof(unsigned char) * 2);
+		// UTF-16LE文字列をバイナリ形式で書き込む
+		outputFile.write(reinterpret_cast<const char*>(str.data()), sizeof(wchar_t) * str.size());
+		outputFile.close();
+	}
+	else
+	{
+		std::cerr << "error" << std::endl;
+	}
+}
+
 void PMXLoader::Load()
 {
 	std::ifstream file(path, std::ios::binary);
@@ -79,8 +106,20 @@ void PMXLoader::Load()
 		textSize = *reinterpret_cast<int*>(textSizeBuf);
 	}
 
+	// バイナリデータの例として、文字列 "Hello, 世界!" のUTF-16LEエンコードを使用します
+	std::vector<char> binaryData = { 0x48, 0x00, 0x65, 0x00, 0x6C, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x2C, 0x00, 0x20, 0x00,
+		0x30, 0x4C, 0x4E, 0x00, 0x21, 0x00 };
+
+	// UTF-16LE形式のバイナリデータをデコードしてファイルに出力する
+	std::wstring decodedString = decodeUTF16LE(binaryData);
+	// writeStringToFile(decodedString, "..\\Output\\output.txt");
+
+	std::vector<char> name(textSize);
+	file.read(&name[0], textSize);
+	writeStringToFile(decodeUTF16LE(name), "..\\Output\\output.txt");
+
 	// テキストのエンコードが面倒なのでサイズ分を読み飛ばす
-	file.seekg(textSize, std::ios::cur);
+	// file.seekg(textSize, std::ios::cur);
 
 	// キャラクターネーム(英)のサイズを読み込み
 	if (file.read(textSizeBuf, 4))
@@ -238,7 +277,7 @@ void PMXLoader::Load()
 		model->vertexData.push_back(vertexData);
 	}
 
-	std::cout << "Vertex data was loaded. " << std::endl;
+	// std::cout << "Vertex data was loaded. " << std::endl;
 
 	int faceCount;
 	if (file.read(reinterpret_cast<char*>(&faceCount), sizeof(int)))
@@ -246,8 +285,6 @@ void PMXLoader::Load()
 		model->faceCount = faceCount;
 	}
 	// file.read(reinterpret_cast<char*>(&model->faceCount), sizeof(float));
-
-	std::cout << "Face count : " << model->faceCount << std::endl;
 
 	switch (model->header.vertexIndexSize)
 	{
@@ -271,7 +308,7 @@ void PMXLoader::Load()
 			}
 			break;
 		}
-	case 3:
+	case 4:
 	{
 		int vertexIndex;
 		for (int i = 0; i < model->faceCount; i++)
@@ -285,18 +322,8 @@ void PMXLoader::Load()
 		std::cout << "This vertex index size is invalid." << std::endl;
 		break;
 	}
-	for (int i = 0; i < model->faceCount; i++)
-	{
-		// std::vector<char> vi(model->header.vertexIndexSize);
-		// file.read(vi.data(), model->header.vertexIndexSize);
-		// GLuint vertexIndex = static_cast<GLuint>(vi[0]);
-		// int vertexIndex = *reinterpret_cast<int*>(vi.data());
-		// model->vertexIndex.push_back(static_cast<GLuint>(vertexIndex));
 
-		// std::cout << "Vertex Index : " << static_cast<int>(vi[0]) << std::endl;
-	}
-
-	std::cout << "Vertex index was loaded." << std::endl;
+	// std::cout << "Vertex index was loaded." << std::endl;
 
 	
 	file.read(textSizeBuf, 4);
@@ -306,7 +333,7 @@ void PMXLoader::Load()
 	{
 		file.read(textSizeBuf, 4);
 		textSize = *reinterpret_cast<int*>(textSizeBuf);
-		std::cout << "Text Size : " << textSize << std::endl;
+		// std::cout << "Text Size : " << textSize << std::endl;
 		file.seekg(textSize, std::ios::cur);
 	}
 
@@ -314,4 +341,99 @@ void PMXLoader::Load()
 	file.read(textSizeBuf, 4);
 	int materialCount = *reinterpret_cast<int*>(textSizeBuf);
 	std::cout << "Material Count : " << materialCount << std::endl;
+
+	/*for (int i = 0; i < materialCount; i++)
+	{
+		// マテリアル名(日)
+		file.read(textSizeBuf, sizeof(int));
+		textSize = *reinterpret_cast<int*>(textSizeBuf);
+		std::cout << "Text Size : " << textSize << std::endl;
+		file.seekg(textSize, std::ios::cur);
+
+		// マテリアル名(英)
+		file.read(textSizeBuf, sizeof(int));
+		textSize = *reinterpret_cast<int*>(textSizeBuf);
+		std::cout << "Text Size : " << textSize << std::endl;
+		file.seekg(textSize, std::ios::cur);
+
+		float diffuseColor[4];
+		file.read(reinterpret_cast<char*>(diffuseColor), 4 * sizeof(float));
+		std::cout << "Diffuse : (" << diffuseColor[0] << ", " << diffuseColor[1] << ", " << diffuseColor[2] << ", " << diffuseColor[3] << ")" << std::endl;
+
+		float specularColor[3];
+		file.read(reinterpret_cast<char*>(specularColor), 3 * sizeof(float));
+		std::cout << "Specular : (" << specularColor[0] << ", " << specularColor[1] << ", " << specularColor[2] << ")" << std::endl;
+
+		float specularity;
+		file.read(reinterpret_cast<char*>(&specularity), sizeof(float));
+		std::cout << "Specularity : " << specularity << std::endl;
+
+		float ambientColor[3];
+		file.read(reinterpret_cast<char*>(ambientColor), 3 * sizeof(float));
+		std::cout << "Ambient Color : (" << ambientColor[0] << ", " << ambientColor[1] << ", " << ambientColor[2] << ")" << std::endl;
+
+		char drawingModeFlag;
+		file.read(&drawingModeFlag, sizeof(char));
+		std::cout << "Drawing Mode Flag : " << static_cast<int>(drawingModeFlag);
+		switch (drawingModeFlag)
+		{
+		case 0x00:
+			std::cout << " : Off" << std::endl;
+			break;
+		case 0x01:
+			std::cout << " : Double-Sided" << std::endl;
+			break;
+		case 0x02:
+			std::cout << " : Shadow" << std::endl;
+			break;
+		case 0x04:
+			std::cout << " : Self shadow map" << std::endl;
+			break;
+		case 0x08:
+			std::cout << " : Self shadow" << std::endl;
+			break;
+		case 0x10:
+			std::cout << " : Draw edges" << std::endl;
+			break;
+		default:
+			std::cout << std::endl;
+			break;
+		}
+
+		float edgeColor[3];
+		file.read(reinterpret_cast<char*>(edgeColor), 3 * sizeof(float));
+		std::cout << "Edge Color : (" << edgeColor[0] << ", " << edgeColor[1] << ", " << edgeColor[2] << ")" << std::endl;
+
+		float edgeSize;
+		file.read(reinterpret_cast<char*>(&edgeSize), sizeof(float));
+		std::cout << "Edge Size : " << edgeSize << std::endl;
+
+		switch (model->header.textureIndexSize)
+		{
+		case sizeof(char) :
+		{
+			char textureIndex;
+			file.read(&textureIndex, sizeof(char));
+			std::cout << "Texture Index : " << static_cast<GLuint>(textureIndex) << std::endl;
+			break;
+		}
+		case sizeof(short) :
+		{
+			short textureIndex;
+			file.read(reinterpret_cast<char*>(&textureIndex), sizeof(short));
+			std::cout << "Texture Index : " << static_cast<GLuint>(textureIndex) << std::endl;
+			break;
+		}
+		case sizeof(int) :
+		{
+			int textureIndex;
+			file.read(reinterpret_cast<char*>(&textureIndex), sizeof(int));
+			std::cout << "Texture Index : " << static_cast<GLuint>(textureIndex) << std::endl;
+			break;
+		}
+		default:
+			break;
+		}
+	}*/
+	
 }
