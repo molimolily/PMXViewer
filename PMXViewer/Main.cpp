@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_DEPTH_TEST);
 
 	// プログラムオブジェクトを作成する
-	Shader shader("point.vert", "point.frag");
+	Shader shader("..\\Shaders\\point.vert", "..\\Shaders\\point.frag");
 
 	// uniform変数の場所を取得する
 	const GLint aspectLoc(shader.getUniformLoc("aspect"));
@@ -58,9 +58,11 @@ int main(int argc, char *argv[])
 	// std::string path = "..\\Models\\test.pmx";
 	// std::string path = "..\\Models\\Sphere.pmx";
 	// std::string path = "..\\Models\\miku.pmx";
+	// std::string path = "..\\Models\\Tda式初音ミク・アペンドVer1.10\\Tda式初音ミク・アペンドVer1.10\\Tda式初音ミク・アペンド_Ver1.10.pmx";
 	std::string path = "..\\Models\\Alicia\\MMD\\Alicia_solid.pmx";
 	// std::string path = "..\\Models\\つみ式ミクさんv4\\つみ式ミクさんv4.pmx";
 	// std::string path = "..\\Models\\コロン式++初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
+	// std::string path = "..\\Models\\ゆかりver7\\ゆかりver7\\ゆかりver7.pmx";
 	// std::string path = "..\\Models\\038_かに\\かに.pmx";
 	Model model(path);
 
