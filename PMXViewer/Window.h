@@ -20,8 +20,11 @@ class Window
 	// マウスカーソルの位置
 	double mousePos[2] = { 0.0, 0.0 };
 	double mousePosOld[2] = { 0.0, 0.0 };
+	float zoomOffset = 0.0f;
 
 	bool isClickLeftMouse = false;
+	bool isClickRightMouse = false;
+	
 
 public:
 
@@ -56,6 +59,9 @@ public:
 
 		// ウィンドウサイズ変更時のコールバック
 		glfwSetWindowSizeCallback(window, resize);
+
+		// スクロール時のコールバック
+		glfwSetScrollCallback(window, mouseWheelCallback);
 
 		// 開いたウィンドウの初期設定
 		resize(window, width, height);
@@ -95,6 +101,31 @@ public:
 		else if(isClickLeftMouse)
 		{
 			isClickLeftMouse = false;
+			
+		}
+
+		// マウスの右ボタンの状態を調べる
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2 != GLFW_RELEASE))
+		{
+			mousePosOld[0] = mousePos[0];
+			mousePosOld[1] = mousePos[1];
+
+			glfwGetCursorPos(window, &mousePos[0], &mousePos[1]);
+			if (isClickRightMouse)
+			{
+				mouseVelocity[0] = static_cast<GLfloat>(mousePos[0] - mousePosOld[0]);
+				mouseVelocity[1] = static_cast<GLfloat>(mousePos[1] - mousePosOld[1]);
+			}
+			
+			isClickRightMouse = true;
+		}
+		else if (isClickRightMouse)
+		{
+			isClickRightMouse = false;
+		}
+
+		if (!isClickLeftMouse && !isClickRightMouse)
+		{
 			mouseVelocity[0] = 0.0f;
 			mouseVelocity[1] = 0.0f;
 		}
@@ -139,6 +170,19 @@ public:
 		}
 	}
 
+	static void mouseWheelCallback(GLFWwindow*window, double x, double y)
+	{
+		Window* const instance(static_cast<Window*>(glfwGetWindowUserPointer(window)));
+		if (y > 0)
+		{
+			instance->zoomOffset += 0.5f;
+		}
+		else if(y < 0)
+		{
+			instance->zoomOffset -= 0.5f;
+		}
+	}
+
 	// ウィンドウのサイズを取り出す
 	// const GLfloat* getSize() const { return size; }
 
@@ -146,5 +190,36 @@ public:
 	GLfloat getAspect() const { return aspect; }
 
 	// マウスの速度を取り出す
-	const GLfloat* getMouseVelocity() { return mouseVelocity; }
+	const GLfloat* getMouseVelocity(bool isLeft)
+	{
+		if (isLeft)
+		{
+			if (isClickLeftMouse)
+			{
+				return mouseVelocity;
+			}
+			else
+			{
+				return new GLfloat[2]{ 0.0f,0.0f };
+			}
+		}
+		else
+		{
+			if (isClickRightMouse)
+			{
+				return mouseVelocity;
+			}
+			else
+			{
+				return new GLfloat[2]{ 0.0f,0.0f };
+			}
+		}
+		
+	}
+
+	// マウスホイールのオフセットを取り出す
+	const float getMouseWheelOffset()
+	{
+		return zoomOffset;
+	}
 };

@@ -22,6 +22,11 @@ public:
 		cameraPosition = glm::vec3(x, y, z);
 	}
 
+	void setCameraPosition(glm::vec3 pos)
+	{
+		cameraPosition = pos;
+	}
+
 	void setCameraTarget(float x, float y, float z)
 	{
 		cameraTarget = glm::vec3(x, y, z);

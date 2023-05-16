@@ -74,8 +74,9 @@ int main(int argc, char *argv[])
 	// std::unique_ptr<Shape> shape(new SolidShapeIndex(3, model.vertexCount, model.vertices.data(), model.faceCount, model.vertexIndex.data()));
 
 	Camara camera;
+	glm::vec3 initCameraPos = glm::vec3(0.0f, 10.0f, -20.0f);
 	shape->transform.setModelPosition(0.0f, 0.0f, 0.0f);
-	camera.transform.setCameraPosition(0.0f, 10.0f, -50.0f);
+	camera.transform.setCameraPosition(initCameraPos);
 	camera.transform.setCameraTarget(glm::vec3(0.0f,10.0f,0.0f));
 
 	while (window)
@@ -86,7 +87,9 @@ int main(int argc, char *argv[])
 		// シェーダーを適用
 		shader.useShaderProgram();
 
-		shape->transform.rotateModelPosition(window.getMouseVelocity()[0], window.getMouseVelocity()[1]);
+		shape->transform.translateModelPosition(window.getMouseVelocity(false)[0], window.getMouseVelocity(false)[1], 0.0f);
+		shape->transform.rotateModelPosition(window.getMouseVelocity(true)[0], window.getMouseVelocity(true)[1]);
+		camera.transform.setCameraPosition(initCameraPos + glm::vec3(0.0f, 0.0f, window.getMouseWheelOffset()));
 
 		// 変換行列の設定
 		glm::mat4 modelViewMatrix = camera.viewMatrix() * shape->transform.modelMatrix();

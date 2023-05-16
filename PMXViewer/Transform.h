@@ -32,6 +32,16 @@ public:
 		modelScale = glm::vec3(x, y, z);
 	}
 
+	void translateModelPosition(float x, float y, float z)
+	{
+		x *= 0.02f;
+		y *= 0.02f;
+		z *= 0.02f;
+
+		modelPosition.x -= x;
+		modelPosition.y -= y;
+		modelPosition.z += z;
+	}
 	void rotateModelPosition(float x, float y)
 	{
 		x *= 0.1f;

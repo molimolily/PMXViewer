@@ -259,4 +259,21 @@ void PMXLoader::Load()
 	}
 
 	std::cout << "Vertex index was loaded." << std::endl;
+
+	
+	file.read(textSizeBuf, 4);
+	int textureCount = *reinterpret_cast<int*>(textSizeBuf);
+	std::cout << "Texture Count : " << textureCount << std::endl;
+	for (int i = 0; i < textureCount; i++)
+	{
+		file.read(textSizeBuf, 4);
+		textSize = *reinterpret_cast<int*>(textSizeBuf);
+		std::cout << "Text Size : " << textSize << std::endl;
+		file.seekg(textSize, std::ios::cur);
+	}
+
+
+	file.read(textSizeBuf, 4);
+	int materialCount = *reinterpret_cast<int*>(textSizeBuf);
+	std::cout << "Material Count : " << materialCount << std::endl;
 }
