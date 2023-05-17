@@ -63,6 +63,9 @@ int main(int argc, char *argv[])
 	// std::string path = "..\\Models\\つみ式ミクさんv4\\つみ式ミクさんv4.pmx";
 	// std::string path = "..\\Models\\コロン式++初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
 	// std::string path = "..\\Models\\ゆかりver7\\ゆかりver7\\ゆかりver7.pmx";
+	// std::string path = "..\\Models\\dot_v3\\どっと式初音ミク_V3_ver.2.02\\どっと式初音ミク_V3.pmx";
+	// std::string path = "..\\Models\\dot_honeywhip\\どっと式初音ミク_ハニーウィップ_ver.2.01\\どっと式初音ミク_ハニーウィップ.pmx";
+	// std::string path = "..\\Models\\dot_breathyou\\どっと式初音ミク_ブレス・ユー_ver.2.01\\どっと式初音ミク_ブレス・ユー.pmx";
 	// std::string path = "..\\Models\\038_かに\\かに.pmx";
 	Model model(path);
 

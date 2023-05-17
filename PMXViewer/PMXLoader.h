@@ -4,6 +4,7 @@
 #include <fstream>
 #include <array>
 #include <string>
+#include <cstring>
 
 class Model;
 
@@ -16,8 +17,7 @@ public:
 	PMXLoader(const std::string& path, Model* model);
 
 	void Load();
-	std::wstring decodeUTF16LE(const std::vector<char>& binaryData);
-	void writeStringToFile(const std::wstring& str, const std::string& filename);
+	bool getPMXStringUTF16(std::ifstream& _file, std::wstring& output);
 };
 
 

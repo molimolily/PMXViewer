@@ -4,9 +4,9 @@
 Model::Model(const std::string& path) : pmxLoader(path,this)
 {
 	pmxLoader.Load();
-	header.Output();
-	std::cout << "Vertex Count : " << vertexCount << std::endl;
-	std::cout << "Face Count : " << faceCount << std::endl;
+	// header.Output();
+	// std::cout << "Vertex Count : " << vertexCount << std::endl;
+	// std::cout << "Face Count : " << faceCount << std::endl;
 
 	/*std::cout << "------ Verticies ------" << std::endl;
 	for (int i = 0; i < vertexCount; i++)
