@@ -5,6 +5,7 @@
 #include <array>
 #include <string>
 #include <cstring>
+#include <bitset>
 
 class Model;
 

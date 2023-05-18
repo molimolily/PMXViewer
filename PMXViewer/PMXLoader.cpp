@@ -300,198 +300,17 @@ void PMXLoader::Load()
 	std::cout << "Material Count : " << materialCount << std::endl;
 
 	
-	// マテリアル名(日)
-	getPMXStringUTF16(file, text);
-	std::wcout << "Material" << 1 << " : " << text << std::endl;
-
-	// マテリアル名(英)
-	getPMXStringUTF16(file, text);
-	std::wcout << "English Material" << 1 << " : " << text << std::endl;
-
-	float diffuseColor[4];
-	file.read(reinterpret_cast<char*>(diffuseColor), 4 * sizeof(float));
-	std::cout << "Diffuse : (" << diffuseColor[0] << ", " << diffuseColor[1] << ", " << diffuseColor[2] << ", " << diffuseColor[3] << ")" << std::endl;
-
-	float specularColor[3];
-	file.read(reinterpret_cast<char*>(specularColor), 3 * sizeof(float));
-	std::cout << "Specular : (" << specularColor[0] << ", " << specularColor[1] << ", " << specularColor[2] << ")" << std::endl;
-
-	float specularity;
-	file.read(reinterpret_cast<char*>(&specularity), sizeof(float));
-	std::cout << "Specularity : " << specularity << std::endl;
-
-	float ambientColor[3];
-	file.read(reinterpret_cast<char*>(ambientColor), 3 * sizeof(float));
-	std::cout << "Ambient Color : (" << ambientColor[0] << ", " << ambientColor[1] << ", " << ambientColor[2] << ")" << std::endl;
-
-	char drawingModeFlag;
-	file.read(&drawingModeFlag, sizeof(char));
-	std::cout << "Drawing Mode Flag : " << static_cast<int>(drawingModeFlag);
-	switch (drawingModeFlag)
-	{
-	case 0x00:
-		std::cout << " : Off" << std::endl;
-		break;
-	case 0x01:
-		std::cout << " : Double-Sided" << std::endl;
-		break;
-	case 0x02:
-		std::cout << " : Shadow" << std::endl;
-		break;
-	case 0x04:
-		std::cout << " : Self shadow map" << std::endl;
-		break;
-	case 0x08:
-		std::cout << " : Self shadow" << std::endl;
-		break;
-	case 0x10:
-		std::cout << " : Draw edges" << std::endl;
-		break;
-	default:
-		std::cout << std::endl;
-		break;
-	}
-
-	float edgeColor[3];
-	file.read(reinterpret_cast<char*>(edgeColor), 3 * sizeof(float));
-	std::cout << "Edge Color : (" << edgeColor[0] << ", " << edgeColor[1] << ", " << edgeColor[2] << ")" << std::endl;
-
-	float edgeSize;
-	file.read(reinterpret_cast<char*>(&edgeSize), sizeof(float));
-	std::cout << "Edge Size : " << edgeSize << std::endl;
-
-	// ????????
-	// file.get();
-	// file.get();
-	// file.get();
-	// file.get();
-	switch (model->header.textureIndexSize)
-	{
-	case sizeof(char) :
-	{
-		/*int textureIndex;
-		file.read(reinterpret_cast<char*>(&textureIndex),sizeof(char));
-		std::cout << "Texture Index : " << textureIndex << std::endl;
-		file.get();
-		file.get();
-		file.get();
-		file.get();
-		file.read(reinterpret_cast<char*>(&textureIndex), sizeof(char));
-		std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;*/
-		char textureIndex[3];
-		file.read(textureIndex, 3);
-		std::cout << "TextureIndex : " << static_cast<int>(textureIndex[2]) << std::endl;
-
-		file.read(textureIndex, 3);
-		std::cout << "TextureIndex : " << reinterpret_cast<int>(textureIndex) << std::endl;
-		break;
-	}
-	case sizeof(short) :
-	{
-		short textureIndex;
-		file.read(reinterpret_cast<char*>(&textureIndex), sizeof(short));
-		std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
-		file.read(reinterpret_cast<char*>(&textureIndex), sizeof(short));
-		std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
-		break;
-	}
-	case sizeof(int) :
-	{
-		int textureIndex;
-		file.read(reinterpret_cast<char*>(&textureIndex), sizeof(int));
-		std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
-		file.read(reinterpret_cast<char*>(&textureIndex), sizeof(int));
-		std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
-		break;
-	}
-	default:
-		break;
-	}
-
-	unsigned char sphereMode;
-	file.read(reinterpret_cast<char*>(&sphereMode), sizeof(unsigned char));
-	if (sphereMode == 255)
-	{
-		std::cout << "Error" << std::endl;
-	}
-	else
-	{
-		std::cout << "Sphere Mode : " << static_cast<int>(sphereMode) << std::endl;
-	}
 	
-	char toonFlag;
-	file.read(&toonFlag, sizeof(char));
-	std::cout << "Toon Flag : " << static_cast<int>(toonFlag) << std::endl;
-
-	switch (toonFlag)
-	{
-	case 0:
-	{
-		switch (model->header.textureIndexSize)
-		{
-		case sizeof(char) :
-		{
-			unsigned char toonIndex;
-			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned char));
-			std::cout << "ToonIndex : " << toonIndex << std::endl;
-			break;
-		}
-		case sizeof(short) :
-		{
-			unsigned short toonIndex;
-			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned short));
-			std::cout << "ToonIndex : " << toonIndex << std::endl;
-			break;
-		}
-		case sizeof(int) :
-		{
-			unsigned int toonIndex;
-			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned int));
-			std::cout << "ToonIndex : " << toonIndex << std::endl;
-			break;
-		}
-		default:
-			std::cerr << "error" << std::endl;
-			break;
-		}
-	}
-	case 1:
-	{
-		unsigned char toonIndex;
-		file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned char));
-		std::cout << "ToonIndex : " << static_cast<int>(toonIndex) << std::endl;
-		break;
-	}
-	default:
-		std::cout << "This toonFlag is invalid" << std::endl;
-		break;
-	}
-
-	/**/
-	getPMXStringUTF16(file, text);
-	std::wcout << "Memo : " << text << std::endl;
 	
-	int fromFaceNumber;
-	file.read(reinterpret_cast<char*>(&fromFaceNumber), sizeof(int));
-	std::cout << "FromFaceNumber : " << fromFaceNumber << std::endl;
-
-	// マテリアル名(日)
-	getPMXStringUTF16(file, text);
-	std::wcout << "Material" << 1 << " : " << text << std::endl;
-
-	// マテリアル名(英)
-	getPMXStringUTF16(file, text);
-	std::wcout << "English Material" << 1 << " : " << text << std::endl;
-	/*
 	for (int i = 0; i < materialCount; i++)
 	{
 		// マテリアル名(日)
 		getPMXStringUTF16(file, text);
-		std::wcout << "Material" << i << " : " << text << std::endl;
+		std::wcout << "Material" << 1 << " : " << text << std::endl;
 
 		// マテリアル名(英)
 		getPMXStringUTF16(file, text);
-		std::wcout << "English Material" << i << " : " << text << std::endl;
+		std::wcout << "English Material" << 1 << " : " << text << std::endl;
 
 		float diffuseColor[4];
 		file.read(reinterpret_cast<char*>(diffuseColor), 4 * sizeof(float));
@@ -511,7 +330,9 @@ void PMXLoader::Load()
 
 		char drawingModeFlag;
 		file.read(&drawingModeFlag, sizeof(char));
-		std::cout << "Drawing Mode Flag : " << static_cast<int>(drawingModeFlag);
+		std::bitset<8> flagbits(drawingModeFlag);
+		std::cout << "Toon Flag : " << flagbits << std::endl;
+		/*std::cout << "Drawing Mode Flag : " << static_cast<int>(drawingModeFlag);
 		switch (drawingModeFlag)
 		{
 		case 0x00:
@@ -535,7 +356,7 @@ void PMXLoader::Load()
 		default:
 			std::cout << std::endl;
 			break;
-		}
+		}*/
 
 		float edgeColor[3];
 		file.read(reinterpret_cast<char*>(edgeColor), 3 * sizeof(float));
@@ -545,32 +366,121 @@ void PMXLoader::Load()
 		file.read(reinterpret_cast<char*>(&edgeSize), sizeof(float));
 		std::cout << "Edge Size : " << edgeSize << std::endl;
 
+		// ????????
+		// file.get();
+		// file.get();
+		// file.get();
+		// file.get();
 		switch (model->header.textureIndexSize)
 		{
 		case sizeof(char) :
 		{
-			char textureIndex;
-			file.read(&textureIndex, sizeof(char));
-			std::cout << "Texture Index : " << static_cast<GLuint>(textureIndex) << std::endl;
+
+			char textureIndex[3];
+			file.read(textureIndex, 3);
+			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
+			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
+			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;
+
+			file.read(textureIndex, 3);
+			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
+			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
+			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;
+			std::cout << "Texture Index : " << static_cast<int>(textureIndex[1]) << std::endl;
+			std::cout << "Sphere Texture Index : " << static_cast<int>(textureIndex[2]) << std::endl;
+			// std::cout << "TextureIndex : " << reinterpret_cast<int>(textureIndex) << std::endl;
 			break;
 		}
 		case sizeof(short) :
 		{
 			short textureIndex;
 			file.read(reinterpret_cast<char*>(&textureIndex), sizeof(short));
-			std::cout << "Texture Index : " << static_cast<GLuint>(textureIndex) << std::endl;
+			std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
+			file.read(reinterpret_cast<char*>(&textureIndex), sizeof(short));
+			std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
 			break;
 		}
 		case sizeof(int) :
 		{
 			int textureIndex;
 			file.read(reinterpret_cast<char*>(&textureIndex), sizeof(int));
-			std::cout << "Texture Index : " << static_cast<GLuint>(textureIndex) << std::endl;
+			std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
+			file.read(reinterpret_cast<char*>(&textureIndex), sizeof(int));
+			std::cout << "Texture Index : " << static_cast<int>(textureIndex) << std::endl;
 			break;
 		}
 		default:
 			break;
 		}
+
+		unsigned char sphereMode;
+		file.read(reinterpret_cast<char*>(&sphereMode), sizeof(unsigned char));
+		if (sphereMode == 255)
+		{
+			std::cout << "Error" << std::endl;
+		}
+		else
+		{
+			std::cout << "Sphere Mode : " << static_cast<int>(sphereMode) << std::endl;
+		}
+
+		char toonFlag;
+		file.read(&toonFlag, sizeof(char));
+		std::cout << "Toon Flag : " << static_cast<int>(toonFlag) << std::endl;
+
+		switch (toonFlag)
+		{
+		case 0:
+		{
+			switch (model->header.textureIndexSize)
+			{
+			case sizeof(char) :
+			{
+				unsigned char toonIndex;
+				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned char));
+				std::cout << "ToonIndex : " << static_cast<int>(toonIndex) << std::endl;
+				break;
+			}
+			case sizeof(short) :
+			{
+				unsigned short toonIndex;
+				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned short));
+				std::cout << "ToonIndex : " << toonIndex << std::endl;
+				break;
+			}
+			case sizeof(int) :
+			{
+				unsigned int toonIndex;
+				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned int));
+				std::cout << "ToonIndex : " << toonIndex << std::endl;
+				break;
+			}
+			default:
+				std::cerr << "error" << std::endl;
+				break;
+			}
+			break;
+		}
+		case 1:
+		{
+			unsigned char toonIndex;
+			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned char));
+			std::cout << "ToonIndex : " << static_cast<int>(toonIndex) << std::endl;
+			break;
+		}
+		default:
+			std::cout << "This toonFlag is invalid" << std::endl;
+			break;
+		}
+
+
+		getPMXStringUTF16(file, text);
+		std::wcout << "Memo : " << text << std::endl;
+
+		int fromFaceNumber;
+		file.read(reinterpret_cast<char*>(&fromFaceNumber), sizeof(int));
+		std::cout << "FromFaceNumber : " << fromFaceNumber << std::endl;
+
+		// if (i > 0) break;
 	}
-	*/
 }
