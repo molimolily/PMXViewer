@@ -298,12 +298,11 @@ void PMXLoader::Load()
 	int materialCount;
 	file.read(reinterpret_cast<char*>(&materialCount), sizeof(int));
 	std::cout << "Material Count : " << materialCount << std::endl;
-
-	
-	
 	
 	for (int i = 0; i < materialCount; i++)
 	{
+		MaterialData materialData;
+
 		// マテリアル名(日)
 		getPMXStringUTF16(file, text);
 		std::wcout << "Material" << 1 << " : " << text << std::endl;
@@ -312,83 +311,60 @@ void PMXLoader::Load()
 		getPMXStringUTF16(file, text);
 		std::wcout << "English Material" << 1 << " : " << text << std::endl;
 
-		float diffuseColor[4];
-		file.read(reinterpret_cast<char*>(diffuseColor), 4 * sizeof(float));
-		std::cout << "Diffuse : (" << diffuseColor[0] << ", " << diffuseColor[1] << ", " << diffuseColor[2] << ", " << diffuseColor[3] << ")" << std::endl;
+		file.read(reinterpret_cast<char*>(materialData.diffuseColor), 4 * sizeof(float));
+		std::cout << "Diffuse : (" << materialData.diffuseColor[0] << ", " << materialData.diffuseColor[1] << ", " << materialData.diffuseColor[2] << ", " << materialData.diffuseColor[3] << ")" << std::endl;
 
-		float specularColor[3];
-		file.read(reinterpret_cast<char*>(specularColor), 3 * sizeof(float));
-		std::cout << "Specular : (" << specularColor[0] << ", " << specularColor[1] << ", " << specularColor[2] << ")" << std::endl;
+		file.read(reinterpret_cast<char*>(materialData.specularColor), 3 * sizeof(float));
+		std::cout << "Specular : (" << materialData.specularColor[0] << ", " << materialData.specularColor[1] << ", " << materialData.specularColor[2] << ")" << std::endl;
 
-		float specularity;
-		file.read(reinterpret_cast<char*>(&specularity), sizeof(float));
-		std::cout << "Specularity : " << specularity << std::endl;
+		file.read(reinterpret_cast<char*>(&materialData.specularity), sizeof(float));
+		std::cout << "Specularity : " << materialData.specularity << std::endl;
 
-		float ambientColor[3];
-		file.read(reinterpret_cast<char*>(ambientColor), 3 * sizeof(float));
-		std::cout << "Ambient Color : (" << ambientColor[0] << ", " << ambientColor[1] << ", " << ambientColor[2] << ")" << std::endl;
+		file.read(reinterpret_cast<char*>(materialData.ambientColor), 3 * sizeof(float));
+		std::cout << "Ambient Color : (" << materialData.ambientColor[0] << ", " << materialData.ambientColor[1] << ", " << materialData.ambientColor[2] << ")" << std::endl;
 
-		char drawingModeFlag;
-		file.read(&drawingModeFlag, sizeof(char));
-		std::bitset<8> flagbits(drawingModeFlag);
-		std::cout << "Toon Flag : " << flagbits << std::endl;
-		/*std::cout << "Drawing Mode Flag : " << static_cast<int>(drawingModeFlag);
-		switch (drawingModeFlag)
-		{
-		case 0x00:
-			std::cout << " : Off" << std::endl;
-			break;
-		case 0x01:
-			std::cout << " : Double-Sided" << std::endl;
-			break;
-		case 0x02:
-			std::cout << " : Shadow" << std::endl;
-			break;
-		case 0x04:
-			std::cout << " : Self shadow map" << std::endl;
-			break;
-		case 0x08:
-			std::cout << " : Self shadow" << std::endl;
-			break;
-		case 0x10:
-			std::cout << " : Draw edges" << std::endl;
-			break;
-		default:
-			std::cout << std::endl;
-			break;
-		}*/
+		file.read(&materialData.drawingModeflags, sizeof(char));
+		std::bitset<8> flagbits(materialData.drawingModeflags);
+		std::cout << "Toon Flag       : " << flagbits << std::endl;
+		std::cout << "Double-Sided    : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::DoubleSided) << std::endl;
+		std::cout << "Shadow          : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::Shadow) << std::endl;
+		std::cout << "Self Shadow Map : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::SelfShadowMap) << std::endl;
+		std::cout << "Self Shadow     : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::SelfShadow) << std::endl;
+		std::cout << "Draw Edges      : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::DrawEdges) << std::endl;
 
-		float edgeColor[3];
-		file.read(reinterpret_cast<char*>(edgeColor), 3 * sizeof(float));
-		std::cout << "Edge Color : (" << edgeColor[0] << ", " << edgeColor[1] << ", " << edgeColor[2] << ")" << std::endl;
+		file.read(reinterpret_cast<char*>(materialData.edgeColor), 3 * sizeof(float));
+		std::cout << "Edge Color : (" << materialData.edgeColor[0] << ", " << materialData.edgeColor[1] << ", " << materialData.edgeColor[2] << ")" << std::endl;
 
-		float edgeSize;
-		file.read(reinterpret_cast<char*>(&edgeSize), sizeof(float));
-		std::cout << "Edge Size : " << edgeSize << std::endl;
+		file.read(reinterpret_cast<char*>(&materialData.edgeSize), sizeof(float));
+		std::cout << "Edge Size : " << materialData.edgeSize << std::endl;
 
-		// ????????
-		// file.get();
-		// file.get();
-		// file.get();
-		// file.get();
+		//textureIndexSizeが1バイトのときしか確認していない. 2 or 4 バイトだと動かないかも
 		switch (model->header.textureIndexSize)
 		{
 		case sizeof(char) :
 		{
-
-			char textureIndex[3];
+			/*char textureIndex[3];
 			file.read(textureIndex, 3);
-			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
-			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
-			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;
+			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
+			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
+			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;
 
 			file.read(textureIndex, 3);
-			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
-			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
-			// std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;
-			std::cout << "Texture Index : " << static_cast<int>(textureIndex[1]) << std::endl;
-			std::cout << "Sphere Texture Index : " << static_cast<int>(textureIndex[2]) << std::endl;
-			// std::cout << "TextureIndex : " << reinterpret_cast<int>(textureIndex) << std::endl;
+			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
+			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
+			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;*/
+
+			// 4バイトとばす, 原因不明
+			file.seekg(4, std::ios::cur);
+
+			char buf;
+			file.read(&buf, sizeof(char));
+			materialData.textureIndex = static_cast<int>(buf);
+			file.read(&buf, sizeof(char));
+			materialData.sphereTextureIndex = static_cast<int>(buf);
+			std::cout << "Texture Index : " << materialData.textureIndex << std::endl;
+			std::cout << "Sphere Texture Index : " << materialData.sphereTextureIndex << std::endl;
+			
 			break;
 		}
 		case sizeof(short) :
@@ -413,22 +389,17 @@ void PMXLoader::Load()
 			break;
 		}
 
-		unsigned char sphereMode;
-		file.read(reinterpret_cast<char*>(&sphereMode), sizeof(unsigned char));
-		if (sphereMode == 255)
-		{
-			std::cout << "Error" << std::endl;
-		}
-		else
-		{
-			std::cout << "Sphere Mode : " << static_cast<int>(sphereMode) << std::endl;
-		}
+		char sphereMode;
+		file.read(&sphereMode, sizeof(char));
+		materialData.sphereMode = static_cast<int>(sphereMode);
+		std::cout << "Sphere Mode : " << materialData.sphereMode << std::endl;
 
 		char toonFlag;
 		file.read(&toonFlag, sizeof(char));
-		std::cout << "Toon Flag : " << static_cast<int>(toonFlag) << std::endl;
+		materialData.sharedToonFlag = static_cast<int>(toonFlag);
+		std::cout << "Shared Toon Flag : " << materialData.sharedToonFlag << std::endl;
 
-		switch (toonFlag)
+		switch (materialData.sharedToonFlag)
 		{
 		case 0:
 		{
@@ -436,23 +407,26 @@ void PMXLoader::Load()
 			{
 			case sizeof(char) :
 			{
-				unsigned char toonIndex;
-				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned char));
-				std::cout << "ToonIndex : " << static_cast<int>(toonIndex) << std::endl;
+				char toonIndex;
+				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(char));
+				materialData.toonTextureIndex = static_cast<int>(toonIndex);
+				std::cout << "Toon Index : " << materialData.toonTextureIndex << std::endl;
 				break;
 			}
 			case sizeof(short) :
 			{
-				unsigned short toonIndex;
-				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned short));
-				std::cout << "ToonIndex : " << toonIndex << std::endl;
+				short toonIndex;
+				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(short));
+				materialData.toonTextureIndex = static_cast<int>(toonIndex);
+				std::cout << "Toon Index : " << materialData.toonTextureIndex << std::endl;
 				break;
 			}
 			case sizeof(int) :
 			{
-				unsigned int toonIndex;
-				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned int));
-				std::cout << "ToonIndex : " << toonIndex << std::endl;
+				int toonIndex;
+				file.read(reinterpret_cast<char*>(&toonIndex), sizeof(int));
+				materialData.toonTextureIndex = static_cast<int>(toonIndex);
+				std::cout << "Toon Index : " << materialData.toonTextureIndex << std::endl;
 				break;
 			}
 			default:
@@ -463,9 +437,10 @@ void PMXLoader::Load()
 		}
 		case 1:
 		{
-			unsigned char toonIndex;
-			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(unsigned char));
-			std::cout << "ToonIndex : " << static_cast<int>(toonIndex) << std::endl;
+			char toonIndex;
+			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(char));
+			materialData.toonTextureIndex = static_cast<int>(toonIndex);
+			std::cout << "Shared Toon Index : " << materialData.toonTextureIndex << std::endl;
 			break;
 		}
 		default:
@@ -477,10 +452,9 @@ void PMXLoader::Load()
 		getPMXStringUTF16(file, text);
 		std::wcout << "Memo : " << text << std::endl;
 
-		int fromFaceNumber;
-		file.read(reinterpret_cast<char*>(&fromFaceNumber), sizeof(int));
-		std::cout << "FromFaceNumber : " << fromFaceNumber << std::endl;
+		file.read(reinterpret_cast<char*>(&materialData.surfaceCount), sizeof(int));
+		std::cout << "Surface Count : " << materialData.surfaceCount << std::endl;
 
-		// if (i > 0) break;
+		model->materialData.push_back(materialData);
 	}
 }

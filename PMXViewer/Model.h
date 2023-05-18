@@ -81,6 +81,38 @@ public:
 	float edgeScale;
 };
 
+class MaterialData
+{
+public:
+	float diffuseColor[4];
+	float specularColor[3];
+	float specularity;
+	float ambientColor[3];
+	char drawingModeflags;
+	float edgeColor[3];
+	float edgeSize;
+	int textureIndex;
+	int sphereTextureIndex;
+	int sphereMode;
+	bool sharedToonFlag;
+	int toonTextureIndex;
+	int surfaceCount;
+
+	enum class DrawingMode
+	{
+		DoubleSided,
+		Shadow,
+		SelfShadowMap,
+		SelfShadow,
+		DrawEdges
+	};
+
+	bool DrawingModeFlag(DrawingMode mode)
+	{
+		return (drawingModeflags &(1 << static_cast<int>(mode))) != 0;
+	}
+};
+
 class Model
 {
 public:
@@ -94,6 +126,8 @@ public:
 
 	int faceCount;
 	std::vector<GLuint> vertexIndex;
+
+	std::vector<MaterialData> materialData;
 
 	PMXLoader pmxLoader;
 
