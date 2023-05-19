@@ -4,6 +4,8 @@
 #include "Object.h"
 #include "PMXLoader.h"
 
+class Object;
+
 class Header
 {
 public:
@@ -73,10 +75,10 @@ public:
 	float normal[3];
 	float uv[2];
 
-	std::vector<std::array<float,4>> appendixUV;
+	// std::vector<std::array<float,4>> appendixUV;
 
-	WeightType weightType;
-	Weight weight;
+	// WeightType weightType;
+	// Weight weight;
 
 	float edgeScale;
 };
@@ -127,6 +129,7 @@ public:
 	int faceCount;
 	std::vector<GLuint> vertexIndex;
 
+	int materialCount;
 	std::vector<MaterialData> materialData;
 
 	PMXLoader pmxLoader;

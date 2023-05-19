@@ -3,7 +3,6 @@
 #include "Object.h"
 #include "Transform.h"
 
-
 class Shape
 {
 	// shared_ptrを使うことで同一のインスタンスを指すShapeクラスのインスタンスが全て削除されたとき, ポインタが削除される

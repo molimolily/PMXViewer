@@ -128,7 +128,9 @@ private:
 		// バーテックスシェーダーのattribute変数の場所(番号)を指定する
 		// attribute変数はバーテックスシェーダーのソースプログラムでin変数として宣言される
 		glBindAttribLocation(program, 0, "position");
-		// glBindAttribLocation(program, 1, "normal");
+		glBindAttribLocation(program, 1, "normal");
+		glBindAttribLocation(program, 2, "uv");
+		glBindAttribLocation(program, 3, "edgeScale");
 		// フラグメントシェーダーのソースプログラム中のout変数にカラーバッファを割り当てる
 		glBindFragDataLocation(program, 0, "fragment");
 		// プログラムオブジェクトをリンクする

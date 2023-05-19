@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "DrawPMX.h"
 
 int main(int argc, char *argv[])
 {
@@ -76,7 +77,9 @@ int main(int argc, char *argv[])
 	// std::unique_ptr<Shape> shape(new ShapeIndex(3, 8, cubeVertex, 24, wireCubeIndex));
 	// std::unique_ptr<Shape> shape(new SolidShapeIndex(3, 8, cubeVertex, 36, solidCubeIndex));
 	// std::unique_ptr<Shape> shape(new Shape(3, model.vertexCount, model.vertices.data()));
-	std::unique_ptr<Shape> shape(new SolidShapeIndex(3, model.vertexCount, model.vertices.data(), model.faceCount, model.vertexIndex.data()));
+	// std::unique_ptr<Shape> shape(new SolidShapeIndex(3, model.vertexCount, model.vertices.data(), model.faceCount, model.vertexIndex.data()));
+
+	std::unique_ptr<DrawPMX> shape(new DrawPMX(model));
 
 	Camara camera;
 	glm::vec3 initCameraPos = glm::vec3(0.0f, 10.0f, -20.0f);
@@ -106,7 +109,10 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projectionMatrix[0][0]);
 
 		// }Œ`‚ð•`‰æ
-		shape->draw();
+		for (int i = 0; i < shape->getMaterialCount(); i++)
+		{
+			shape->draw(i);
+		}
 
 		window.swapBuffers();
 	}

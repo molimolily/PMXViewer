@@ -134,39 +134,39 @@ void PMXLoader::Load()
 		{
 			std::array<float, 4> appendixUV;
 			file.read(reinterpret_cast<char*>(appendixUV.data()), 4 * sizeof(float));
-			vertexData.appendixUV.push_back(appendixUV);
+			// vertexData.appendixUV.push_back(appendixUV);
 		}
 
 		char wiType;
 		file.read(reinterpret_cast<char*>(&wiType), 1);
 		int _witype = static_cast<int>(wiType);
-		vertexData.weightType = static_cast<WeightType>(wiType);
+		// vertexData.weightType = static_cast<WeightType>(wiType);
 		
 
-		switch (vertexData.weightType)
+		switch (static_cast<WeightType>(_witype))
 		{
 		case WeightType::BDEF1:
 		{
 			std::vector<char> bone(model->header.boneIndexSize);
 			file.read(bone.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone[0]));
 			break;
 		}
 		case WeightType::BDEF2:
 		{
 			std::vector<char> bone1(model->header.boneIndexSize);
 			file.read(bone1.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone1[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone1[0]));
 
 			std::vector<char> bone2(model->header.boneIndexSize);
 			file.read(bone2.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone2[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone2[0]));
 
 			float weight1;
 			file.read(reinterpret_cast<char*>(&weight1), sizeof(float));
-			vertexData.weight.weights.push_back(weight1);
+			// vertexData.weight.weights.push_back(weight1);
 
-			vertexData.weight.weights.push_back(1.0f - weight1);
+			// vertexData.weight.weights.push_back(1.0f - weight1);
 			break;
 		}
 		case WeightType::BDEF4:
@@ -174,25 +174,25 @@ void PMXLoader::Load()
 			
 			std::vector<char> bone1(model->header.boneIndexSize);
 			file.read(bone1.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone1[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone1[0]));
 
 			std::vector<char> bone2(model->header.boneIndexSize);
 			file.read(bone2.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone2[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone2[0]));
 
 			std::vector<char> bone3(model->header.boneIndexSize);
 			file.read(bone3.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone3[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone3[0]));
 
 			std::vector<char> bone4(model->header.boneIndexSize);
 			file.read(bone4.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone4[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone4[0]));
 
 			float weights[4];
 			file.read(reinterpret_cast<char*>(weights), 4 * sizeof(float));
 			for (float weight : weights)
 			{
-				vertexData.weight.weights.push_back(weight);
+				// vertexData.weight.weights.push_back(weight);
 			}
 			break;
 		}
@@ -200,34 +200,34 @@ void PMXLoader::Load()
 		{
 			std::vector<char> bone1(model->header.boneIndexSize);
 			file.read(bone1.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone1[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone1[0]));
 
 			std::vector<char> bone2(model->header.boneIndexSize);
 			file.read(bone2.data(), model->header.boneIndexSize);
-			vertexData.weight.bones.push_back(static_cast<int>(bone2[0]));
+			// vertexData.weight.bones.push_back(static_cast<int>(bone2[0]));
 
 			float weight1;
 			file.read(reinterpret_cast<char*>(&weight1), sizeof(float));
-			vertexData.weight.weights.push_back(weight1);
+			// vertexData.weight.weights.push_back(weight1);
 
-			vertexData.weight.weights.push_back(1.0f - weight1);
+			// vertexData.weight.weights.push_back(1.0f - weight1);
 
 			std::array<float, 3> sdef_c;
 			file.read(reinterpret_cast<char*>(sdef_c.data()), 3 * sizeof(float));
-			vertexData.weight.sdef.push_back(sdef_c);
+			// vertexData.weight.sdef.push_back(sdef_c);
 
 			std::array<float, 3> sdef_r0;
 			file.read(reinterpret_cast<char*>(sdef_r0.data()), 3 * sizeof(float));
-			vertexData.weight.sdef.push_back(sdef_r0);
+			// vertexData.weight.sdef.push_back(sdef_r0);
 
 			std::array<float, 3> sdef_r1;
 			file.read(reinterpret_cast<char*>(sdef_r1.data()), 3 * sizeof(float));
-			vertexData.weight.sdef.push_back(sdef_r1);
+			// vertexData.weight.sdef.push_back(sdef_r1);
 
 			break;
 		}
 		default:
-			std::cout << i << " : Weight Type : " << static_cast<int>(vertexData.weightType);
+			// std::cout << i << " : Weight Type : " << static_cast<int>(vertexData.weightType);
 			std::cout << " This weight Type is invalid." << std::endl;
 			break;
 		}
@@ -295,11 +295,10 @@ void PMXLoader::Load()
 		std::wcout << "Texture" << i << " : " << text << std::endl;
 	}
 
-	int materialCount;
-	file.read(reinterpret_cast<char*>(&materialCount), sizeof(int));
-	std::cout << "Material Count : " << materialCount << std::endl;
+	file.read(reinterpret_cast<char*>(&model->materialCount), sizeof(int));
+	std::cout << "Material Count : " << model->materialCount << std::endl;
 	
-	for (int i = 0; i < materialCount; i++)
+	for (int i = 0; i < model->materialCount; i++)
 	{
 		MaterialData materialData;
 
@@ -399,9 +398,14 @@ void PMXLoader::Load()
 		materialData.sharedToonFlag = static_cast<int>(toonFlag);
 		std::cout << "Shared Toon Flag : " << materialData.sharedToonFlag << std::endl;
 
-		switch (materialData.sharedToonFlag)
+		if (materialData.sharedToonFlag)
 		{
-		case 0:
+			char toonIndex;
+			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(char));
+			materialData.toonTextureIndex = static_cast<int>(toonIndex);
+			std::cout << "Shared Toon Index : " << materialData.toonTextureIndex << std::endl;
+		}
+		else
 		{
 			switch (model->header.textureIndexSize)
 			{
@@ -433,19 +437,6 @@ void PMXLoader::Load()
 				std::cerr << "error" << std::endl;
 				break;
 			}
-			break;
-		}
-		case 1:
-		{
-			char toonIndex;
-			file.read(reinterpret_cast<char*>(&toonIndex), sizeof(char));
-			materialData.toonTextureIndex = static_cast<int>(toonIndex);
-			std::cout << "Shared Toon Index : " << materialData.toonTextureIndex << std::endl;
-			break;
-		}
-		default:
-			std::cout << "This toonFlag is invalid" << std::endl;
-			break;
 		}
 
 
