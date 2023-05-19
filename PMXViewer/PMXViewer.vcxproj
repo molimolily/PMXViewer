@@ -134,9 +134,9 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Shaders\point.frag" />
+    <None Include="..\Shaders\point.vert" />
     <None Include="packages.config" />
-    <None Include="point.frag" />
-    <None Include="point.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

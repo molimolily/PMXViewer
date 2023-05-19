@@ -64,8 +64,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="point.frag" />
-    <None Include="point.vert" />
     <None Include="packages.config" />
+    <None Include="..\Shaders\point.frag" />
+    <None Include="..\Shaders\point.vert" />
   </ItemGroup>
 </Project>

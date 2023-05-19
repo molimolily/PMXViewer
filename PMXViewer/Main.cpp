@@ -55,6 +55,12 @@ int main(int argc, char *argv[])
 	const GLint aspectLoc(shader.getUniformLoc("aspect"));
 	const GLint modelViewLoc(shader.getUniformLoc("modelView"));
 	const GLint projectionLoc(shader.getUniformLoc("projection"));
+	const GLint normalMatrixLoc(shader.getUniformLoc("normalMatrix"));
+
+	const GLint diffuseColorLoc(shader.getUniformLoc("diffuseColor"));
+	const GLint specularColorLoc(shader.getUniformLoc("specularColor"));
+	const GLint specularityLoc(shader.getUniformLoc("specularity"));
+	const GLint ambientColorLoc(shader.getUniformLoc("ambientColor"));
 
 	// std::string path = "..\\Models\\test.pmx";
 	// std::string path = "..\\Models\\Sphere.pmx";
@@ -91,7 +97,7 @@ int main(int argc, char *argv[])
 	{
 		// カラーバッファを背景色で初期化
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		// シェーダーを適用
 		shader.useShaderProgram();
 
@@ -103,14 +109,22 @@ int main(int argc, char *argv[])
 		glm::mat4 modelViewMatrix = camera.viewMatrix() * shape->transform.modelMatrix();
 		glm::mat4 projectionMatrix = camera.perspective(45.0f, window.getAspect(), 0.1f, 200.0f);
 
+		// 法線の変換行列
+		glm::mat4 normalMatrix = shape->transform.normalMatrix();
+
 		// Uniform変数に値を設定
 		glUniform1f(aspectLoc, window.getAspect());
 		glUniformMatrix4fv(modelViewLoc, 1, GL_FALSE,&modelViewMatrix[0][0]);
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projectionMatrix[0][0]);
+		glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
 
 		// 図形を描画
 		for (int i = 0; i < shape->getMaterialCount(); i++)
 		{
+			glUniform4fv(diffuseColorLoc, 1, shape->model.materialData[i].diffuseColor);
+			glUniform3fv(specularColorLoc, 1, shape->model.materialData[i].specularColor);
+			glUniform1f(specularityLoc, shape->model.materialData[i].specularity);
+			glUniform3fv(ambientColorLoc, 1, shape->model.materialData[i].ambientColor);
 			shape->draw(i);
 		}
 

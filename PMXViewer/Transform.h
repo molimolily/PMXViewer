@@ -68,4 +68,10 @@ public:
 
 		return modelMatrix;
 	}
+
+	glm::mat3 normalMatrix()
+	{
+		glm::mat3 modelMat = glm::mat3(modelMatrix());
+		return glm::mat3(glm::transpose(glm::inverse(modelMat)));
+	}
 };

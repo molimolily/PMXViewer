@@ -25,10 +25,12 @@ class DrawPMX
 	// インデックスの頂点バッファオブジェクト
 	std::vector<GLuint> ibo;
 
-	Model model;
+	// ユニフォームバッファオブジェクト
+	// GLuint ubo;
 
 	void setAndEnableVertexAttrib();
 public:
+	Model model;
 	Transform transform;
 	DrawPMX(Model model);
 
