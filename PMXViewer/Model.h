@@ -91,7 +91,7 @@ public:
 	float specularity;
 	float ambientColor[3];
 	char drawingModeflags;
-	float edgeColor[3];
+	float edgeColor[4];
 	float edgeSize;
 	int textureIndex;
 	int sphereTextureIndex;

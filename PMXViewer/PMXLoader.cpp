@@ -331,31 +331,16 @@ void PMXLoader::Load()
 		std::cout << "Self Shadow     : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::SelfShadow) << std::endl;
 		std::cout << "Draw Edges      : " << materialData.DrawingModeFlag(MaterialData::DrawingMode::DrawEdges) << std::endl;
 
-		file.read(reinterpret_cast<char*>(materialData.edgeColor), 3 * sizeof(float));
-		std::cout << "Edge Color : (" << materialData.edgeColor[0] << ", " << materialData.edgeColor[1] << ", " << materialData.edgeColor[2] << ")" << std::endl;
+		file.read(reinterpret_cast<char*>(materialData.edgeColor), 4 * sizeof(float));
+		std::cout << "Edge Color : (" << materialData.edgeColor[0] << ", " << materialData.edgeColor[1] << ", " << materialData.edgeColor[2] << ", " << materialData.edgeColor[3] << ")" << std::endl;
 
 		file.read(reinterpret_cast<char*>(&materialData.edgeSize), sizeof(float));
 		std::cout << "Edge Size : " << materialData.edgeSize << std::endl;
 
-		//textureIndexSizeが1バイトのときしか確認していない. 2 or 4 バイトだと動かないかも
 		switch (model->header.textureIndexSize)
 		{
 		case sizeof(char) :
 		{
-			/*char textureIndex[3];
-			file.read(textureIndex, 3);
-			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
-			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
-			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;
-
-			file.read(textureIndex, 3);
-			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[0]) << std::endl;
-			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[1]) << std::endl;
-			std::cout << "TextureIndex : " << static_cast<std::bitset<8>>(textureIndex[2]) << std::endl;*/
-
-			// 4バイトとばす, 原因不明
-			file.seekg(4, std::ios::cur);
-
 			char buf;
 			file.read(&buf, sizeof(char));
 			materialData.textureIndex = static_cast<int>(buf);
