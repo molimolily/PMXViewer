@@ -3,8 +3,10 @@
 #include <vector>
 #include "Object.h"
 #include "PMXLoader.h"
+#include "TexLoader.h"
 
 class Object;
+class TexLoader;
 
 class Header
 {
@@ -129,12 +131,16 @@ public:
 	int faceCount;
 	std::vector<GLuint> vertexIndex;
 
+	int texCount;
+	std::vector<std::wstring> texPath;
+
 	int materialCount;
 	std::vector<MaterialData> materialData;
 
 	PMXLoader pmxLoader;
+	TexLoader texLoader;
 
-	Model(const std::string& path);
+	Model(const std::wstring& path);
 
 };
 

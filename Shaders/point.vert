@@ -12,7 +12,7 @@ out vec3 norm;
 void main()
 {
 	pos = modelView * position;
-	gl_Position = projection * pos;
 	norm = normalize(normalMatrix * normal);
+	gl_Position = projection * pos;
 	// gl_Position = position;
 }

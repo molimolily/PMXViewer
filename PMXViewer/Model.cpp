@@ -1,10 +1,12 @@
 #include "Model.h"
 #include "PMXLoader.h"
+#include "TexLoader.h"
 // #include "Object.h"
 
-Model::Model(const std::string& path) : pmxLoader(path,this)
+Model::Model(const std::wstring& path) : pmxLoader(path,this), texLoader(this)
 {
 	pmxLoader.Load();
+	texLoader.Load();
 	// header.Output();
 	// std::cout << "Vertex Count : " << vertexCount << std::endl;
 	// std::cout << "Face Count : " << faceCount << std::endl;

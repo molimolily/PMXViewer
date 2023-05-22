@@ -11,11 +11,11 @@ class Model;
 
 class PMXLoader
 {
-	std::string path;
+	std::wstring path;
 	Model* model;
 
 public:
-	PMXLoader(const std::string& path, Model* model);
+	PMXLoader(const std::wstring& path, Model* model);
 
 	void Load();
 	bool getPMXStringUTF16(std::ifstream& _file, std::wstring& output);

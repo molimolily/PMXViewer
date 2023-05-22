@@ -1,7 +1,7 @@
 #include "Model.h"
 #include "PMXLoader.h"
 
-PMXLoader::PMXLoader(const std::string& path, Model* model) :
+PMXLoader::PMXLoader(const std::wstring& path, Model* model) :
 	path(path), model(model)
 {
 
@@ -25,7 +25,7 @@ void PMXLoader::Load()
 	std::ifstream file(path, std::ios::binary);
 	if (!file)
 	{
-		std::cerr << "Failed to open " << path << std::endl;
+		std::wcerr << "Failed to open " << path << std::endl;
 		// std::exit(1);
 	}
 
@@ -286,13 +286,19 @@ void PMXLoader::Load()
 
 	// std::cout << "Vertex index was loaded." << std::endl;
 
-	int textureCount;
-	file.read(reinterpret_cast<char*>(&textureCount), sizeof(int));
+	// int textureCount;
+	file.read(reinterpret_cast<char*>(&model->texCount), sizeof(int));
 	// std::cout << "Texture Count : " << textureCount << std::endl;
-	for (int i = 0; i < textureCount; i++)
+	for (int i = 0; i < model->texCount; i++)
 	{
 		getPMXStringUTF16(file, text);
-		// std::wcout << "Texture" << i << " : " << text << std::endl;
+		std::wstring dirPath = path;
+		dirPath.erase(path.rfind(L"/")+1);
+
+		text = dirPath + text;
+		
+		model->texPath.push_back(text);
+		std::wcout << "Texture" << i << " : " << text << std::endl;
 	}
 
 	file.read(reinterpret_cast<char*>(&model->materialCount), sizeof(int));
@@ -346,7 +352,7 @@ void PMXLoader::Load()
 			materialData.textureIndex = static_cast<int>(buf);
 			file.read(&buf, sizeof(char));
 			materialData.sphereTextureIndex = static_cast<int>(buf);
-			// std::cout << "Texture Index : " << materialData.textureIndex << std::endl;
+			std::cout << "Texture Index : " << materialData.textureIndex << std::endl;
 			// std::cout << "Sphere Texture Index : " << materialData.sphereTextureIndex << std::endl;
 			
 			break;

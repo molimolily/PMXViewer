@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 	// 背面カリングを有効にする
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
+	// glCullFace(GL_FRONT);
 	glEnable(GL_CULL_FACE);
 
 	// デプスバッファを有効にする
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_DEPTH_TEST);
 
 	// プログラムオブジェクトを作成する
-	Shader shader("..\\Shaders\\point.vert", "..\\Shaders\\point.frag");
+	Shader shader("../Shaders/point.vert", "../Shaders/point.frag");
 
 	// uniform変数の場所を取得する
 	const GLint aspectLoc(shader.getUniformLoc("aspect"));
@@ -57,23 +58,24 @@ int main(int argc, char *argv[])
 	const GLint projectionLoc(shader.getUniformLoc("projection"));
 	const GLint normalMatrixLoc(shader.getUniformLoc("normalMatrix"));
 
+	const GLint lightPositonLoc(shader.getUniformLoc("Lpos"));
 	const GLint diffuseColorLoc(shader.getUniformLoc("diffuseColor"));
 	const GLint specularColorLoc(shader.getUniformLoc("specularColor"));
 	const GLint specularityLoc(shader.getUniformLoc("specularity"));
 	const GLint ambientColorLoc(shader.getUniformLoc("ambientColor"));
 
-	// std::string path = "..\\Models\\test.pmx";
-	// std::string path = "..\\Models\\Sphere.pmx";
-	// std::string path = "..\\Models\\miku.pmx";
-	std::string path = "..\\Models\\Tda式初音ミク・アペンドVer1.10\\Tda式初音ミク・アペンドVer1.10\\Tda式初音ミク・アペンド_Ver1.10.pmx";
-	// std::string path = "..\\Models\\Alicia\\MMD\\Alicia_solid.pmx";
-	// std::string path = "..\\Models\\つみ式ミクさんv4\\つみ式ミクさんv4.pmx";
-	// std::string path = "..\\Models\\コロン式++初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2\\コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
-	// std::string path = "..\\Models\\ゆかりver7\\ゆかりver7\\ゆかりver7.pmx";
-	// std::string path = "..\\Models\\dot_v3\\どっと式初音ミク_V3_ver.2.02\\どっと式初音ミク_V3.pmx";
-	// std::string path = "..\\Models\\dot_honeywhip\\どっと式初音ミク_ハニーウィップ_ver.2.01\\どっと式初音ミク_ハニーウィップ.pmx";
-	// std::string path = "..\\Models\\dot_breathyou\\どっと式初音ミク_ブレス・ユー_ver.2.01\\どっと式初音ミク_ブレス・ユー.pmx";
-	// std::string path = "..\\Models\\038_かに\\かに.pmx";
+	// std::wstring path = L"../Models/test.pmx";
+	// std::wstring path = L"../Models/Sphere.pmx";
+	// std::wstring path = L"../Models/miku.pmx";
+	std::wstring path = L"../Models/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンド_Ver1.10.pmx";
+	// std::wstring path = L"../Models/Alicia/MMD/Alicia_solid.pmx";
+	// std::wstring path = L"../Models/つみ式ミクさんv4/つみ式ミクさんv4.pmx";
+	// std::wstring path = L"../Models/コロン式++初音ミクV3_Re_rev.1.2/コロン式  初音ミクV3_Re_rev.1.2/コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
+	// std::wstring path = L"../Models/ゆかりver7/ゆかりver7/ゆかりver7.pmx";
+	// std::wstring path = L"../Models/dot_v3/どっと式初音ミク_V3_ver.2.02/どっと式初音ミク_V3.pmx";
+	// std::wstring path = L"../Models/dot_honeywhip/どっと式初音ミク_ハニーウィップ_ver.2.01/どっと式初音ミク_ハニーウィップ.pmx";
+	// std::wstring path = L"../Models/dot_breathyou/どっと式初音ミク_ブレス・ユー_ver.2.01/どっと式初音ミク_ブレス・ユー.pmx";
+	// std::wstring path = L"../Models/038_かに/かに.pmx";
 	Model model(path);
 
 	// 図形データの作成
@@ -92,6 +94,8 @@ int main(int argc, char *argv[])
 	shape->transform.setModelPosition(0.0f, 0.0f, 0.0f);
 	camera.transform.setCameraPosition(initCameraPos);
 	camera.transform.setCameraTarget(glm::vec3(0.0f,10.0f,0.0f));
+
+	glm::vec4 Lpos = glm::vec4(0.0, 10.0, -20.0, 1.0);
 
 	while (window)
 	{
@@ -112,11 +116,15 @@ int main(int argc, char *argv[])
 		// 法線の変換行列
 		glm::mat4 normalMatrix = shape->transform.normalMatrix();
 
+		// 光源の位置を変換
+		Lpos = camera.viewMatrix() * Lpos;
+ 
 		// Uniform変数に値を設定
 		glUniform1f(aspectLoc, window.getAspect());
 		glUniformMatrix4fv(modelViewLoc, 1, GL_FALSE,&modelViewMatrix[0][0]);
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projectionMatrix[0][0]);
 		glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
+		glUniform4fv(lightPositonLoc, 1, &Lpos[0]);
 
 		// 図形を描画
 		for (int i = 0; i < shape->getMaterialCount(); i++)
