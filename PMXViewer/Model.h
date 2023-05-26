@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <FreeImage.h>
 #include "Object.h"
 #include "PMXLoader.h"
 #include "TexLoader.h"
@@ -133,6 +134,8 @@ public:
 
 	int texCount;
 	std::vector<std::wstring> texPath;
+	// std::vector<TexLoader::Texture> textureData;
+	std::vector<FIBITMAP*> textureData;
 
 	int materialCount;
 	std::vector<MaterialData> materialData;

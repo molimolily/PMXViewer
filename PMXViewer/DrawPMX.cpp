@@ -38,6 +38,8 @@ DrawPMX::DrawPMX(Model model) : model(model),materialCount(model.materialCount)
 		// インデックスバッファオブジェクトにデータを転送
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, surfaceCount * sizeof(GLuint), index.data(), GL_STATIC_DRAW);
 	}
+
+	setTexture();
 }
 
 DrawPMX::~DrawPMX()
@@ -60,6 +62,44 @@ void DrawPMX::setAndEnableVertexAttrib()
 	glEnableVertexAttribArray(NORMAL_INDEX);
 	glEnableVertexAttribArray(UV_INDEX);
 	glEnableVertexAttribArray(EDGE_SCALE_INDEX);
+}
+
+void DrawPMX::setTexture()
+{
+	
+	texID.resize(model.texCount);
+	// テクスチャIDの登録
+	glGenTextures(model.texCount, texID.data());
+
+	for (int i = 0; i < model.texCount; i++)
+	{
+		FIBITMAP* img = model.textureData[i];
+		// テクスチャを有効にする
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texID[i]);
+		if (img != nullptr)
+		{
+			int width = FreeImage_GetWidth(img);
+			int height = FreeImage_GetHeight(img);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, FreeImage_GetBits(img));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		}
+		else
+		{
+			std::cerr << "Failed to set texture: " << i << std::endl;
+		}
+		
+		glDisable(GL_TEXTURE_2D);
+		FreeImage_Unload(img);
+	}
+
+	// テクスチャのアンバインド
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
 }
 
 void DrawPMX::bind(int n) const

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include<GL/glew.h>
+#include <FreeImage.h>
 #include "Model.h"
 #include "Transform.h"
 // class Model;
@@ -29,9 +30,14 @@ class DrawPMX
 	// GLuint ubo;
 
 	void setAndEnableVertexAttrib();
+	void setTexture();
 public:
 	Model model;
 	Transform transform;
+
+	// テクスチャID
+	std::vector<GLuint> texID;
+
 	DrawPMX(Model model);
 
 	~DrawPMX();

@@ -71,7 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="..\Shaders\point.frag" />
-    <None Include="..\Shaders\point.vert" />
+    <None Include="..\Shaders\textured.frag" />
+    <None Include="..\Shaders\vertex.vert" />
   </ItemGroup>
 </Project>

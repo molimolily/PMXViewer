@@ -121,7 +121,13 @@ void PMXLoader::Load()
 		VertexData vertexData;
 		file.read(reinterpret_cast<char*>(vertexData.position), 3 * sizeof(float));
 		file.read(reinterpret_cast<char*>(vertexData.normal), 3 * sizeof(float));
-		file.read(reinterpret_cast<char*>(vertexData.uv), 2 * sizeof(float));
+
+		// uvÀ•W‚ğ‰EèŒn‚ÉC³‚·‚é
+		float uv[2];
+		file.read(reinterpret_cast<char*>(uv), 2 * sizeof(float));
+		uv[1] = 1.0f - uv[1];
+		vertexData.uv[0] = uv[0];
+		vertexData.uv[1] = uv[1];
 		/* std::cout << "Position : (" << vertexData.position[0] << ", " << vertexData.position[1] << ", " << vertexData.position[2] << ")";
 		std::cout << ", Normal : (" << vertexData.normal[0] << ", " << vertexData.normal[1] << ", " << vertexData.normal[2] << ")";
 		std::cout << ", UV : (" << vertexData.uv[0] << ", " << vertexData.uv[1] << ")" << std::endl; */
@@ -298,7 +304,7 @@ void PMXLoader::Load()
 		text = dirPath + text;
 		
 		model->texPath.push_back(text);
-		std::wcout << "Texture" << i << " : " << text << std::endl;
+		// std::wcout << "Texture" << i << " : " << text << std::endl;
 	}
 
 	file.read(reinterpret_cast<char*>(&model->materialCount), sizeof(int));
@@ -352,7 +358,14 @@ void PMXLoader::Load()
 			materialData.textureIndex = static_cast<int>(buf);
 			file.read(&buf, sizeof(char));
 			materialData.sphereTextureIndex = static_cast<int>(buf);
-			std::cout << "Texture Index : " << materialData.textureIndex << std::endl;
+			if (materialData.textureIndex != -1)
+			{
+				// std::wcout << "Texture Index : " << materialData.textureIndex << ", Texture : " << model->texPath[materialData.textureIndex] << std::endl;
+			}
+			else
+			{
+				// std::wcout << "Texture Index : " << materialData.textureIndex << std::endl;
+			}
 			// std::cout << "Sphere Texture Index : " << materialData.sphereTextureIndex << std::endl;
 			
 			break;
@@ -439,4 +452,5 @@ void PMXLoader::Load()
 
 		model->materialData.push_back(materialData);
 	}
+	model->materialCount -= 4;
 }

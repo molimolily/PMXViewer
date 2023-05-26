@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_DEPTH_TEST);
 
 	// プログラムオブジェクトを作成する
-	Shader shader("../Shaders/point.vert", "../Shaders/point.frag");
+	Shader shader("../Shaders/vertex.vert", "../Shaders/textured.frag");
 
 	// uniform変数の場所を取得する
 	const GLint aspectLoc(shader.getUniformLoc("aspect"));
@@ -63,17 +63,19 @@ int main(int argc, char *argv[])
 	const GLint specularColorLoc(shader.getUniformLoc("specularColor"));
 	const GLint specularityLoc(shader.getUniformLoc("specularity"));
 	const GLint ambientColorLoc(shader.getUniformLoc("ambientColor"));
+	const GLint textureLoc(shader.getUniformLoc("tex"));
 
 	// std::wstring path = L"../Models/test.pmx";
 	// std::wstring path = L"../Models/Sphere.pmx";
 	// std::wstring path = L"../Models/miku.pmx";
-	std::wstring path = L"../Models/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンド_Ver1.10.pmx";
+	// std::wstring path = L"../Models/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンド_Ver1.10.pmx";
 	// std::wstring path = L"../Models/Alicia/MMD/Alicia_solid.pmx";
 	// std::wstring path = L"../Models/つみ式ミクさんv4/つみ式ミクさんv4.pmx";
 	// std::wstring path = L"../Models/コロン式++初音ミクV3_Re_rev.1.2/コロン式  初音ミクV3_Re_rev.1.2/コロン式  初音ミクV3_Re_rev.1.2(ノーマル).pmx";
 	// std::wstring path = L"../Models/ゆかりver7/ゆかりver7/ゆかりver7.pmx";
+	// std::wstring path = L"../Models/koharu_rikka_mmd_20230521/小春六花3Dモデル_20230521_半袖追加/小春六花.pmx";
 	// std::wstring path = L"../Models/dot_v3/どっと式初音ミク_V3_ver.2.02/どっと式初音ミク_V3.pmx";
-	// std::wstring path = L"../Models/dot_honeywhip/どっと式初音ミク_ハニーウィップ_ver.2.01/どっと式初音ミク_ハニーウィップ.pmx";
+	std::wstring path = L"../Models/dot_honeywhip/どっと式初音ミク_ハニーウィップ_ver.2.01/どっと式初音ミク_ハニーウィップ.pmx";
 	// std::wstring path = L"../Models/dot_breathyou/どっと式初音ミク_ブレス・ユー_ver.2.01/どっと式初音ミク_ブレス・ユー.pmx";
 	// std::wstring path = L"../Models/038_かに/かに.pmx";
 	Model model(path);
@@ -96,6 +98,8 @@ int main(int argc, char *argv[])
 	camera.transform.setCameraTarget(glm::vec3(0.0f,10.0f,0.0f));
 
 	glm::vec4 Lpos = glm::vec4(0.0, 10.0, -20.0, 1.0);
+
+	// std::cout << "texture : " << static_cast<unsigned int>(shape->model.textureData[0].data[1]) << std::endl;
 
 	while (window)
 	{
@@ -133,6 +137,15 @@ int main(int argc, char *argv[])
 			glUniform3fv(specularColorLoc, 1, shape->model.materialData[i].specularColor);
 			glUniform1f(specularityLoc, shape->model.materialData[i].specularity);
 			glUniform3fv(ambientColorLoc, 1, shape->model.materialData[i].ambientColor);
+
+			
+			if (shape->model.materialData[i].textureIndex != -1)
+			{
+				glActiveTexture(GL_TEXTURE0 + shape->model.materialData[i].textureIndex);
+				glBindTexture(GL_TEXTURE_2D, shape->texID[shape->model.materialData[i].textureIndex]);
+				glUniform1i(textureLoc, shape->model.materialData[i].textureIndex);
+				// glUniform1i(textureLoc, shape->texID[shape->model.materialData[i].textureIndex]);
+			}
 			shape->draw(i);
 		}
 
