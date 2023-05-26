@@ -83,7 +83,7 @@ void PMXLoader::Load()
 		model->header.rigidBodyIndexSize = static_cast<size_t>(headerInfo[7]);
 	}
 
-	model->header.Output();
+	// model->header.Output();
 
 	// コンソールにテキストを表示するためにロケールを設定
 	setlocale(LC_ALL, "Japanese");
@@ -316,7 +316,7 @@ void PMXLoader::Load()
 
 		// マテリアル名(日)
 		getPMXStringUTF16(file, text);
-		// std::wcout << "Material" << 1 << " : " << text << std::endl;
+		std::wcout << "Material" << i << " : " << text << std::endl;
 
 		// マテリアル名(英)
 		getPMXStringUTF16(file, text);
@@ -364,7 +364,7 @@ void PMXLoader::Load()
 			}
 			else
 			{
-				// std::wcout << "Texture Index : " << materialData.textureIndex << std::endl;
+				std::wcout << "Texture Index : " << materialData.textureIndex << std::endl;
 			}
 			// std::cout << "Sphere Texture Index : " << materialData.sphereTextureIndex << std::endl;
 			
@@ -452,5 +452,4 @@ void PMXLoader::Load()
 
 		model->materialData.push_back(materialData);
 	}
-	model->materialCount -= 4;
 }

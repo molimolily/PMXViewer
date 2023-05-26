@@ -4,30 +4,6 @@
 TexLoader::TexLoader(Model* model) : model(model)
 {
 	
-	std::wstring path = L"../Models/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンドVer1.10/toon_skin.bmp";
-	FREE_IMAGE_FORMAT format = FreeImage_GetFileTypeU(path.data());
-	FIBITMAP* img = FreeImage_LoadU(format, path.data());
-	if (img == nullptr)
-	{
-		std::cerr << "Load Error" << std::endl;
-	}
-	else
-	{
-		FIBITMAP* img32 = FreeImage_ConvertTo32Bits(img);
-		std::cout << "Load Success" << std::endl;
-		std::cout << "width : " << FreeImage_GetWidth(img) << ", height : " << FreeImage_GetHeight(img) << std::endl;
-		std::cout << "BPP : " << FreeImage_GetBPP(img) << std::endl;
-		std::cout << "filetype : " << FIF_TARGA << ", " << FreeImage_GetFileTypeU(path.data()) << std::endl;
-		std::cout << "imageType : " << FreeImage_GetImageType(img) << std::endl;
-		BYTE* bits = FreeImage_GetBits(img32);
-		std::cout << "Bits: ";
-		int length = FreeImage_GetWidth(img32) * FreeImage_GetHeight(img32) * FreeImage_GetBPP(img32);
-		for (size_t i = 0; i < length/2; i++) {
-			// std::cout << static_cast<int>(bits[i]) << " ";
-		}
-		std::cout << std::endl;
-	}
-	
 }
 
 void TexLoader::Load()
@@ -44,7 +20,7 @@ void TexLoader::Load()
 		{
 			FIBITMAP* img32 = FreeImage_ConvertTo32Bits(img);
 			model->textureData[i] = img32;
-			std::cout << "width : " << FreeImage_GetWidth(img32) << ", height : " << FreeImage_GetHeight(img32) << std::endl;
+			// std::cout << "width : " << FreeImage_GetWidth(img32) << ", height : " << FreeImage_GetHeight(img32) << std::endl;
 			FreeImage_Unload(img);
 		}
 		else
