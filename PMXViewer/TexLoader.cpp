@@ -19,6 +19,7 @@ void TexLoader::Load()
 		if (img != nullptr)
 		{
 			FIBITMAP* img32 = FreeImage_ConvertTo32Bits(img);
+			FreeImage_FlipVertical(img32);
 			model->textureData[i] = img32;
 			// std::cout << "width : " << FreeImage_GetWidth(img32) << ", height : " << FreeImage_GetHeight(img32) << std::endl;
 			FreeImage_Unload(img);

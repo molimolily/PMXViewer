@@ -119,13 +119,20 @@ void PMXLoader::Load()
 	for (int i = 0; i < vertexCount; i++)
 	{
 		VertexData vertexData;
-		file.read(reinterpret_cast<char*>(vertexData.position), 3 * sizeof(float));
+		float vertexPosition[3];
+		file.read(reinterpret_cast<char*>(vertexPosition), 3 * sizeof(float));
+		vertexPosition[0] *= -1;
+		vertexData.position[0] = vertexPosition[0];
+		vertexData.position[1] = vertexPosition[1];
+		vertexData.position[2] = vertexPosition[2];
+		// file.read(reinterpret_cast<char*>(vertexData.position), 3 * sizeof(float));
 		file.read(reinterpret_cast<char*>(vertexData.normal), 3 * sizeof(float));
 
 		// uvç¿ïWÇâEéËånÇ…èCê≥Ç∑ÇÈ
 		float uv[2];
 		file.read(reinterpret_cast<char*>(uv), 2 * sizeof(float));
-		uv[1] = 1.0f - uv[1];
+		// uv[0]*= 1.0f - uv[0];
+		// uv[1] = 1.0f - uv[1];
 		vertexData.uv[0] = uv[0];
 		vertexData.uv[1] = uv[1];
 		/* std::cout << "Position : (" << vertexData.position[0] << ", " << vertexData.position[1] << ", " << vertexData.position[2] << ")";

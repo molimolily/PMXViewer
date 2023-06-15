@@ -42,7 +42,10 @@ int main(int argc, char *argv[])
 
 	// 背面カリングを有効にする
 	glFrontFace(GL_CCW);
-	glCullFace(GL_BACK);
+	// glCullFace(GL_BACK);
+	glCullFace(GL_FRONT);
+
+	// glFrontFace(GL_CW);
 	// glCullFace(GL_FRONT);
 	glEnable(GL_CULL_FACE);
 
@@ -69,6 +72,7 @@ int main(int argc, char *argv[])
 
 	// std::wstring path = L"../Models/test.pmx";
 	// std::wstring path = L"../Models/Sphere.pmx";
+	// std::wstring path = L"../Models/Quad/Quad.pmx";
 	// std::wstring path = L"../Models/miku.pmx";
 	// std::wstring path = L"../Models/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンドVer1.10/Tda式初音ミク・アペンド_Ver1.10.pmx";
 	// std::wstring path = L"../Models/Alicia/MMD/Alicia_solid.pmx";
@@ -105,7 +109,12 @@ int main(int argc, char *argv[])
 
 	int materialCount = shape->getMaterialCount();
 	std::vector<bool> meshFlag(materialCount, true);
+
+	// meshFlag[19] = false;
 	// meshFlag[3] = false;
+	// meshFlag[8] = false;
+	// meshFlag[9] = false;
+	// meshFlag[13] = false;
 	while (window)
 	{
 		// カラーバッファを背景色で初期化
